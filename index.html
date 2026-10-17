@@ -203,6 +203,9 @@ td.r,th.r{text-align:right}
 .progress{height:4px;background:var(--neutral-bg);border-radius:2px;overflow:hidden}
 .progress div{height:100%;background:var(--accent);width:0;transition:width .2s}
 .legend{font-size:12.5px;color:var(--muted);margin:0}
+.intro h2{font-size:22px;font-weight:600}
+.passos{margin:0;padding-left:22px;display:grid;gap:10px;font-size:14.5px;max-width:70ch}
+.passos li::marker{color:var(--accent);font-weight:700}
 .foot{border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
 .foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 24px;padding-block:18px 28px}
 .foot b{color:var(--ink)}
@@ -251,7 +254,6 @@ td.r,th.r{text-align:right}
     </label>
     <div class="progress" hidden id="prog"><div></div></div>
     <button class="btn primary" id="btnRun" disabled>Validar notas</button>
-    <button class="btn ghost sm" id="btnSample">Ver exemplo</button>
     <p class="privacy">Os XMLs são lidos no seu navegador. Nenhum arquivo é enviado para servidor.</p>
     <hr style="border:0;border-top:1px solid var(--line);margin:0">
     <div class="eyebrow">3. Cenários de alíquota</div>
@@ -289,7 +291,7 @@ td.r,th.r{text-align:right}
 "use strict";
 /* ================= estado ================= */
 let R = null;                 // regras.json
-const S = { filesE: [], filesS: [], prof: { tipo: "comercio", ramos: ["supermercado"], gov: false }, cen: null, items: [], groups: [], res: null, sample: false, tab: "resumo", filtro: "todos", busca: "" };
+const S = { filesE: [], filesS: [], prof: { tipo: "comercio", ramos: [], gov: false }, cen: null, items: [], groups: [], res: null, sample: false, tab: "resumo", filtro: "todos", busca: "" };
 const $ = (s, el = document) => el.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const brl = v => (v < 0 ? "-" : "") + "R$ " + Math.abs(v).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -750,6 +752,7 @@ function render() {
   const nForn = new Set(S.groups.filter(g => g.origem === "E" && ["erro", "risco"].includes(g.status)).map(g => g.forn)).size;
   const tabs = [["resumo", "Resumo", ""], ["correcoes", "Correções", nCorr], ["fornecedores", "Fornecedores", nForn], ["itens", "Validação item a item", S.items.length], ["base", "Base legal", ""]];
   $("#tabs").innerHTML = tabs.map(([id, nm, c]) => `<button class="tab" role="tab" id="t-${id}" aria-selected="${S.tab === id}" data-tab="${id}">${nm}${c !== "" ? `<span class="c ${id !== "itens" && c ? "err" : ""}">${c}</span>` : ""}</button>`).join("");
+  $("#btnExport").hidden = !EXPORT_OK; $("#tabs").parentElement.hidden = false;
   const P = { resumo: rResumo, correcoes: rCorrecoes, fornecedores: rFornecedores, itens: rItens, base: rBase };
   $("#panes").innerHTML = `<div class="tabpane" role="tabpanel">${P[S.tab]()}</div>`;
 }
@@ -920,6 +923,23 @@ function lerCenarios() {
   const g = id => { const x = parseFloat($(id).value); return isFinite(x) && x >= 0 ? x : 0; };
   S.cen = { c27: g("#c27"), i27: g("#i27"), cP: g("#cP"), iP: g("#iP") };
 }
+let EXPORT_OK = false;
+function renderVazio() {
+  $("#sampleNotice").hidden = true; $("#simplesNotice").hidden = true;
+  $("#company").innerHTML = ""; $("#kpis").innerHTML = ""; $("#tabs").innerHTML = ""; $("#tabs").parentElement.hidden = true; $("#btnExport").hidden = true;
+  $("#panes").innerHTML = `
+  <div class="card intro">
+    <h2>Confira a classificação de IBS e CBS das suas notas</h2>
+    <p class="hint" style="font-size:14.5px;max-width:62ch">Envie os XMLs de entrada e saída. O validador compara o CST e o cClassTrib de cada item com a LC 214/2025, mostra o que corrigir no cadastro e quanto a empresa paga a mais ou corre risco de recolher a menor.</p>
+    <ol class="passos">
+      <li><b>Defina o perfil.</b> Marque se é comércio, serviço ou ambos e os ramos de atuação. Isso reduz os enquadramentos possíveis para cada item.</li>
+      <li><b>Envie os XMLs.</b> NF-e, NFC-e e NFS-e do Padrão Nacional, soltos ou em ZIP. Saídas são as vendas e serviços prestados; entradas, as compras e serviços tomados.</li>
+      <li><b>Clique em Validar notas.</b> O resultado traz o resumo financeiro, a lista de correções por produto, as divergências de cada fornecedor e a exportação para Excel.</li>
+    </ol>
+    <p class="privacy">Os arquivos são lidos no seu navegador e não são enviados para nenhum servidor.</p>
+  </div>
+  <div class="tabpane">${rBase()}</div>`;
+}
 function reprocessar() {
   if (!S.items.length) return;
   const its = S.items.map(({ op, esp, status, tipoErro, probs, base, imp, ...raw }) => raw);
@@ -999,15 +1019,15 @@ async function iniciar() {
   ligarDrop($("#dropE"), $("#fileE"), "filesE", "#cntE");
   ligarDrop($("#dropS"), $("#fileS"), "filesS", "#cntS");
   $("#btnRun").addEventListener("click", rodar);
-  $("#btnSample").addEventListener("click", () => { S.tab = "resumo"; rodarExemplo(); });
   for (const id of ["#c27", "#i27", "#cP", "#iP"]) $(id).addEventListener("change", () => { lerCenarios(); reprocessar(); });
   document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener("change", () => { S.prof.tipo = r.value; desenharRamos(); perfilMudou(); }));
   $("#ramos").addEventListener("change", ev => { if (!ev.target.matches("input[type=checkbox]")) return; const id = ev.target.value; S.prof.ramos = ev.target.checked ? [...new Set([...S.prof.ramos, id])] : S.prof.ramos.filter(x => x !== id); perfilMudou(); });
   $("#gov").addEventListener("change", ev => { S.prof.gov = ev.target.checked; perfilMudou(); });
   $("#btnExport").addEventListener("click", exportar);
-  rodarExemplo();
+  renderVazio();
   const dl = window.claude?.use ? await window.claude.use("downloads") : "site";
-  $("#btnExport").hidden = !dl || !window.XLSX;
+  EXPORT_OK = !!dl && !!window.XLSX;
+  $("#btnExport").hidden = !(EXPORT_OK && S.res);
 }
 iniciar();
 </script>
