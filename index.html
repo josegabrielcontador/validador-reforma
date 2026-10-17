@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Valide a classificação de IBS e CBS (CST e cClassTrib) das suas NF-e, NFC-e e NFS-e pela LC 214/2025 e veja quanto sua empresa paga a mais. Os XMLs são lidos no seu navegador.">
+<meta name="theme-color" content="#0D1733">
+<meta property="og:title" content="Validador IBS/CBS Smartcontax">
+<meta property="og:description" content="Valide a classificação de IBS e CBS (CST e cClassTrib) das suas NF-e, NFC-e e NFS-e pela LC 214/2025 e veja quanto sua empresa paga a mais. Os XMLs são lidos no seu navegador.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23D4600A'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-size='26' font-weight='700' fill='white' text-anchor='middle'%3ESC%3C/text%3E%3C/svg%3E">
+<style>body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Validador Reforma Smartcontax</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Lato:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: faixa institucional no topo, painel de envio + resultados em abas; tabelas com rolagem própria */
+:root{
+  --bg:#F4F5F9; --surface:#FFFFFF; --surface-2:#F8F9FC; --ink:#0D1733; --muted:#5A6276; --line:#DCE0EA;
+  --band:#0D1733; --band-ink:#FFFFFF; --band-muted:#AEB8D6;
+  --brand:#1B2F6E; --brand-2:#2B4BAA; --accent:#D4600A; --accent-ink:#FFFFFF; --gold:#C8930A;
+  --ok:#1D7A4C; --ok-bg:#E6F4EC; --err:#B8322A; --err-bg:#FBE9E7; --warn:#A86A0C; --warn-bg:#FDF2DD;
+  --info:#2B4BAA; --info-bg:#E7ECFA; --neutral-bg:#ECEEF3;
+  --f-display:"Sora","Segoe UI",system-ui,sans-serif;
+  --f-body:"Lato","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A1020; --surface:#111A2E; --surface-2:#0E1628; --ink:#E7EBF5; --muted:#99A2B8; --line:#25304A;
+  --band:#060B17; --band-ink:#FFFFFF; --band-muted:#8F9BBE;
+  --brand:#9DB2F0; --brand-2:#7F9CF0; --accent:#F0782A; --accent-ink:#1A0E05; --gold:#E2B13A;
+  --ok:#4CC38A; --ok-bg:#12301F; --err:#F2735F; --err-bg:#3A1714; --warn:#E5AA45; --warn-bg:#34260C;
+  --info:#8EA8F2; --info-bg:#18234A; --neutral-bg:#1A2338; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A1020; --surface:#111A2E; --surface-2:#0E1628; --ink:#E7EBF5; --muted:#99A2B8; --line:#25304A;
+  --band:#060B17; --band-ink:#FFFFFF; --band-muted:#8F9BBE;
+  --brand:#9DB2F0; --brand-2:#7F9CF0; --accent:#F0782A; --accent-ink:#1A0E05; --gold:#E2B13A;
+  --ok:#4CC38A; --ok-bg:#12301F; --err:#F2735F; --err-bg:#3A1714; --warn:#E5AA45; --warn-bg:#34260C;
+  --info:#8EA8F2; --info-bg:#18234A; --neutral-bg:#1A2338; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--band)}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.2}
+.mono,code{font-family:var(--f-mono);font-size:.88em}
+.num{font-variant-numeric:tabular-nums}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* faixa */
+.band{background:var(--band);color:var(--band-ink)}
+.band .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-block:16px}
+.mark{display:flex;align-items:center;gap:12px}
+.mark .sq{width:40px;height:40px;border-radius:9px;background:var(--accent);display:grid;place-items:center;font-family:var(--f-display);font-weight:700;color:#fff;font-size:15px;letter-spacing:.02em}
+.mark h1{font-size:19px;font-weight:600}
+.mark p{margin:0;color:var(--band-muted);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase}
+.basebadge{margin-left:auto;display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--band-muted);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:6px 12px}
+.basebadge b{color:var(--band-ink);font-weight:700}
+.dot{width:8px;height:8px;border-radius:50%;background:#4CC38A;flex:none}
+.dot.old{background:#E5AA45}
+
+main.wrap{display:grid;grid-template-columns:330px minmax(0,1fr);gap:24px;padding-block:24px 48px;align-items:start}
+@media (max-width:980px){main.wrap{grid-template-columns:minmax(0,1fr)}}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:16px}
+.panel h2{font-size:15px;font-weight:600}
+.eyebrow{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.drop{border:1.5px dashed var(--line);border-radius:var(--r);padding:14px;display:grid;gap:6px;cursor:pointer;background:var(--surface-2);transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--accent)}
+.drop strong{font-family:var(--f-display);font-size:14px;font-weight:600;display:flex;justify-content:space-between;gap:8px}
+.drop small{color:var(--muted);font-size:12.5px}
+.drop .cnt{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
+.drop input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.field{display:grid;gap:5px}
+.field label{font-size:12.5px;color:var(--muted);font-weight:700}
+.field select,.field input{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface-2)}
+.seg label{position:relative;text-align:center;padding:8px 4px;font-size:13px;font-weight:700;cursor:pointer;color:var(--muted)}
+.seg label+label{border-left:1px solid var(--line)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--ink);color:var(--surface)}
+.seg label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:-2px}
+.ramos{display:grid;gap:7px;max-height:280px;overflow:auto;padding:2px 4px 2px 0}
+.ramos .grp{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-top:4px}
+.ramos .soon{font-size:12px;color:var(--warn);margin:0}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;line-height:1.35;cursor:pointer}
+.check input,.field .check input{margin-top:2px;accent-color:var(--accent);flex:none;width:auto;padding:0;border:0;background:none}
+.field .check{font-size:13.5px;color:var(--ink);font-weight:400}
+.perfilchips{display:flex;flex-wrap:wrap;gap:6px;width:100%}
+.perfilchips span{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted);background:var(--surface)}
+.btn{border:0;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.primary:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.ghost:hover{border-color:var(--brand-2)}
+.btn.sm{padding:6px 10px;font-size:13px}
+.hint{font-size:12.5px;color:var(--muted);margin:0}
+.privacy{font-size:12.5px;color:var(--muted);display:flex;gap:8px;align-items:flex-start;margin:0}
+.privacy::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--ok);margin-top:6px;flex:none}
+
+.results{display:grid;gap:18px;min-width:0}
+.results>*{min-width:0}
+.notice{border-radius:var(--r);padding:12px 14px;font-size:14px;display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.notice.sample{background:var(--info-bg);color:var(--ink);border:1px solid color-mix(in srgb,var(--info) 30%,transparent)}
+.notice.simples{background:var(--warn-bg);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent)}
+.notice b{font-weight:900}
+.company{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline}
+.company h2{font-size:22px;font-weight:600}
+.company span{color:var(--muted);font-size:13.5px}
+
+.kpis{display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr;gap:12px}
+@media (max-width:1100px){.kpis{grid-template-columns:1fr 1fr}}
+@media (max-width:460px){.kpis{grid-template-columns:1fr}}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:4px;align-content:start}
+.kpi .lbl{font-size:12.5px;color:var(--muted);font-weight:700}
+.kpi .val{font-family:var(--f-display);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi .sub{font-size:12.5px;color:var(--muted)}
+.kpi.hero{background:var(--band);border-color:color-mix(in srgb,var(--accent) 45%,var(--band));color:var(--band-ink)}
+.kpi.hero .lbl,.kpi.hero .sub{color:var(--band-muted)}
+.kpi.hero .val{color:#FF9A4D;font-size:30px}
+.kpi.risk .val{color:var(--warn)}
+.kpi.bad .val{color:var(--err)}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:thin}
+.tab{background:none;border:0;padding:10px 14px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;display:flex;gap:8px;align-items:center}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .c{font-family:var(--f-mono);font-size:11.5px;background:var(--neutral-bg);border-radius:999px;padding:1px 8px;color:var(--ink)}
+.tab .c.err{background:var(--err-bg);color:var(--err)}
+.tabpane{display:grid;gap:16px;min-width:0}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:12px;min-width:0;align-content:start}
+.card h3{font-size:15px;font-weight:600}
+.grid2{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px}
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr)}}
+
+.bars{display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;font-size:13.5px}
+.bar .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .v{font-family:var(--f-mono);font-size:12.5px;text-align:right}
+.bar .track{grid-column:1/-1;height:8px;background:var(--neutral-bg);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);border-radius:4px}
+.bar .fill.risk{background:var(--warn)}
+
+.statusgrid{display:grid;gap:8px}
+.st{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;padding:8px 10px;border-radius:8px;background:var(--surface-2)}
+
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.p-ok{background:var(--ok-bg);color:var(--ok)}
+.p-err{background:var(--err-bg);color:var(--err)}
+.p-risk{background:var(--warn-bg);color:var(--warn)}
+.p-ver{background:var(--info-bg);color:var(--info)}
+.p-na{background:var(--neutral-bg);color:var(--muted)}
+
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{text-align:left;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface-2);white-space:nowrap;position:sticky;top:0}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right}
+.prod{font-weight:700}
+.prod small{display:block;font-weight:400;color:var(--muted);font-family:var(--f-mono);font-size:11.5px}
+.codeline{font-family:var(--f-mono);font-size:12.5px;white-space:nowrap}
+.from{color:var(--err);text-decoration:line-through;text-decoration-thickness:1px}
+.to{color:var(--ok);font-weight:500}
+.todo{min-width:260px;max-width:420px}
+.todo p{margin:0 0 4px}
+.todo .law{font-size:12px;color:var(--muted)}
+.todo .law a{color:var(--brand-2)}
+.money{font-family:var(--f-mono);white-space:nowrap}
+.money.pos{color:var(--err)}
+.money.neg{color:var(--warn)}
+
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filters input{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:0;flex:1 1 200px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:700;cursor:pointer;color:var(--muted)}
+.chip[aria-pressed="true"]{border-color:var(--accent);color:var(--ink);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+
+.supplier{display:grid;gap:10px}
+.supplier header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:baseline}
+.supplier header h3{font-size:16px}
+.supplier header span{color:var(--muted);font-size:13px;font-family:var(--f-mono)}
+.msgbox{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:13.5px;white-space:pre-wrap;max-height:220px;overflow:auto}
+
+.timeline{display:grid;gap:0}
+.tl{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.tl:last-child{border-bottom:0}
+.tl time{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.tl h4{margin:0 0 4px;font-size:14.5px;font-family:var(--f-display);font-weight:600}
+.tl p{margin:0;font-size:13.5px;color:var(--muted)}
+.tl a{font-size:12.5px;color:var(--brand-2)}
+.tag{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--accent);margin-right:6px}
+.srclist{display:grid;gap:8px;font-size:13.5px;margin:0;padding:0;list-style:none}
+.srclist li{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px dashed var(--line);padding-bottom:8px}
+.srclist a{color:var(--brand-2)}
+.empty{padding:28px;text-align:center;color:var(--muted);font-size:14px}
+.toast{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:8px;font-size:14px;z-index:20}
+.progress{height:4px;background:var(--neutral-bg);border-radius:2px;overflow:hidden}
+.progress div{height:100%;background:var(--accent);width:0;transition:width .2s}
+.legend{font-size:12.5px;color:var(--muted);margin:0}
+.foot{border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
+.foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 24px;padding-block:18px 28px}
+.foot b{color:var(--ink)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="wrap">
+    <div class="mark">
+      <div class="sq" aria-hidden="true">SC</div>
+      <div>
+        <p>Smartcontax · Reforma Tributária</p>
+        <h1>Validador IBS/CBS de NF-e e NFS-e</h1>
+      </div>
+    </div>
+    <div class="basebadge" id="basebadge"><span class="dot" id="basedot"></span><span>Base legal: <b id="baseversao">carregando</b></span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <aside class="panel" aria-label="Perfil e envio de arquivos">
+    <div class="eyebrow">1. Perfil da empresa</div>
+    <div class="seg" role="radiogroup" aria-label="Tipo de empresa">
+      <label><input type="radio" name="tipo" id="tipoC" value="comercio">Comércio</label>
+      <label><input type="radio" name="tipo" id="tipoS" value="servico">Serviços</label>
+      <label><input type="radio" name="tipo" id="tipoA" value="ambos">Ambos</label>
+    </div>
+    <div class="field">
+      <label>Ramos de atuação</label>
+      <div class="ramos" id="ramos"></div>
+    </div>
+    <label class="check"><input type="checkbox" id="gov"><span>Vende para órgãos públicos ou entidades de saúde imunes</span></label>
+    <p class="hint" id="perfilHint">O perfil limita os enquadramentos possíveis para cada item. Sem ramo marcado, o app considera todos.</p>
+    <hr style="border:0;border-top:1px solid var(--line);margin:0">
+    <div class="eyebrow">2. Envie os XMLs</div>
+    <label class="drop" id="dropE" for="fileE">
+      <strong>Entradas <span class="cnt" id="cntE">0 arquivos</span></strong>
+      <small>Compras (NF-e) e serviços tomados (NFS-e). XML ou ZIP.</small>
+      <input type="file" id="fileE" multiple accept=".xml,.zip,text/xml,application/zip">
+    </label>
+    <label class="drop" id="dropS" for="fileS">
+      <strong>Saídas <span class="cnt" id="cntS">0 arquivos</span></strong>
+      <small>Vendas (NF-e e NFC-e) e serviços prestados (NFS-e Nacional). XML ou ZIP.</small>
+      <input type="file" id="fileS" multiple accept=".xml,.zip,text/xml,application/zip">
+    </label>
+    <div class="progress" hidden id="prog"><div></div></div>
+    <button class="btn primary" id="btnRun" disabled>Validar notas</button>
+    <button class="btn ghost sm" id="btnSample">Ver exemplo</button>
+    <p class="privacy">Os XMLs são lidos no seu navegador. Nenhum arquivo é enviado para servidor.</p>
+    <hr style="border:0;border-top:1px solid var(--line);margin:0">
+    <div class="eyebrow">3. Cenários de alíquota</div>
+    <p class="hint">Usados para projetar quanto o erro custa quando o imposto passar a ser pago. Em 2026 o IBS/CBS é de teste e não gera desembolso para quem cumpre as obrigações acessórias.</p>
+    <div class="row2">
+      <div class="field"><label for="c27">CBS 2027 (%)</label><input id="c27" type="number" step="0.01" min="0"></div>
+      <div class="field"><label for="i27">IBS 2027 (%)</label><input id="i27" type="number" step="0.01" min="0"></div>
+      <div class="field"><label for="cP">CBS plena (%)</label><input id="cP" type="number" step="0.01" min="0"></div>
+      <div class="field"><label for="iP">IBS pleno (%)</label><input id="iP" type="number" step="0.01" min="0"></div>
+    </div>
+    <p class="hint" id="cenNota"></p>
+  </aside>
+
+  <section class="results" id="results" aria-live="polite">
+    <div class="notice sample" id="sampleNotice" hidden><span><b>Exemplo com dados fictícios.</b> Envie os XMLs de entrada e saída ao lado para analisar a sua empresa.</span></div>
+    <div class="notice simples" id="simplesNotice" hidden></div>
+    <div class="company" id="company"></div>
+    <div class="kpis" id="kpis"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+      <div class="tabs" role="tablist" id="tabs" style="flex:1 1 auto;min-width:0"></div>
+      <button class="btn ghost sm" id="btnExport" hidden>Exportar Excel</button>
+    </div>
+    <div id="panes"></div>
+  </section>
+</main>
+<footer class="foot"><div class="wrap">
+  <span><b>Smartcontax Contabilidade &amp; Consultoria</b> · CRC-DF 031772/O · contato@smartcontax.com.br · WhatsApp (61) 99665-1487</span>
+  <span>Ferramenta de apoio à revisão fiscal. Os resultados não substituem a análise de um profissional sobre cada operação.</span>
+</div></footer>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+"use strict";
+/* ================= estado ================= */
+let R = null;                 // regras.json
+const S = { filesE: [], filesS: [], prof: { tipo: "comercio", ramos: ["supermercado"], gov: false }, cen: null, items: [], groups: [], res: null, sample: false, tab: "resumo", filtro: "todos", busca: "" };
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const brl = v => (v < 0 ? "-" : "") + "R$ " + Math.abs(v).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const brl0 = v => (v < 0 ? "-" : "") + "R$ " + Math.abs(v).toLocaleString("pt-BR", { maximumFractionDigits: 0 });
+const pct = v => (Math.round(v * 100) / 100).toLocaleString("pt-BR") + "%";
+const fmtNCM = n => n && n.length === 8 ? n.slice(0, 4) + "." + n.slice(4, 6) + "." + n.slice(6) : (n || "");
+const fmtDoc = d => d && d.length === 14 ? d.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5") : (d || "");
+const brDate = iso => iso ? iso.slice(8, 10) + "/" + iso.slice(5, 7) + "/" + iso.slice(0, 4) : "";
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, 3200); }
+
+/* ================= regras: aplicabilidade NCM ================= */
+let VIDX = {};
+function indexar() {
+  VIDX = {};
+  for (const v of R.vinculos) (VIDX[v.p.slice(0, 2)] ||= []).push(v);
+  NFSE_IDX = new Map();
+  for (const r of R.nfse || []) { if (!NFSE_IDX.has(r[0])) NFSE_IDX.set(r[0], []); NFSE_IDX.get(r[0]).push(r); }
+}
+const RESTRITIVO = /destinad|conformidade|denominad|exceto|requisito|quando|pr[óo]pri|para uso|registrad|f[óo]rmula|utilizad|elaborad|espec[íi]fic|in natura|exclusiv/i;
+function itemConfianca(itens) {
+  // alta: o item do anexo define o produto apenas pelo NCM; média: há condição de descrição/destinação
+  for (const k of itens) { const t = R.itensAnexo[k] || ""; if (RESTRITIVO.test(t) || t.length > 220) return "media"; }
+  return "alta";
+}
+function aplicaveis(ncm) {
+  const by = {};
+  for (const v of (VIDX[ncm.slice(0, 2)] || [])) if (ncm.startsWith(v.p)) (by[v.c] ||= []).push(v);
+  const out = [];
+  for (const c in by) {
+    const cov = by[c];
+    const excl = cov.some(l => l.x.some(e => ncm.startsWith(e)));
+    const limpo = cov.some(l => l.x.length === 0);
+    if (!excl || limpo) {
+      const itens = [...new Set(cov.map(l => l.i).filter(Boolean))];
+      out.push({ c, itens, conf: itemConfianca(itens) });
+    }
+  }
+  return out;
+}
+/* perfil da empresa: códigos permitidos pelos ramos marcados (null = sem restrição) */
+let PERF = { allowed: null, rest: false, gov: false };
+function montarPerfil() {
+  const tipos = S.prof.tipo === "ambos" ? ["comercio", "servico"] : [S.prof.tipo];
+  const ramos = (R.ramos || []).filter(r => S.prof.ramos.includes(r.id) && tipos.includes(r.tipo));
+  const merc = ramos.filter(r => r.tipo === "comercio");
+  const allowed = merc.length ? new Set(merc.flatMap(r => r.codigos)) : null;
+  if (allowed && S.prof.gov) for (const c of R.governo) allowed.add(c);
+  const serv = ramos.filter(r => r.tipo === "servico");
+  const allowedServ = serv.length ? new Set(serv.flatMap(r => r.codigos)) : null;
+  PERF = { allowed, allowedServ, rest: merc.some(r => r.especial === "restaurante"), gov: S.prof.gov, ramos };
+  CACHE_ESP.clear();
+}
+function ramoDoCodigo(c) { const r = (R.ramos || []).find(x => x.tipo === "comercio" && x.codigos.includes(c)); return r ? r.nome : ""; }
+const CACHE_ESP = new Map();
+function esperado(ncm, modo) {
+  // modo: "SV" venda da empresa (aplica perfil e regime de restaurante), "S" outras saídas, "E" nota de fornecedor (sem filtro de perfil)
+  const key = ncm + "|" + modo;
+  if (CACHE_ESP.has(key)) return CACHE_ESP.get(key);
+  const ap = aplicaveis(ncm);
+  const codes = new Set(ap.map(a => a.c));
+  const filtra = modo !== "E" && PERF.allowed;
+  const ok = c => !filtra || PERF.allowed.has(c);
+  const heur = (R.heuristicas || []).find(h => h.prefixos.some(p => ncm.startsWith(p))) || null;
+  let e = null;
+  if (modo === "SV" && PERF.rest && R.classes["200047"]) {
+    e = { c: "200047", conf: "media", itens: [] };
+  } else {
+    const z = R.padraoZero.find(c => codes.has(c) && ok(c));
+    const s = R.padrao60.find(c => codes.has(c) && ok(c));
+    const pick = z || s;
+    if (pick) { const a = ap.find(x => x.c === pick); e = { c: pick, conf: a.conf, itens: a.itens }; }
+    else if (heur && filtra && PERF.allowed.has(heur.cClassTrib) && !codes.size) e = { c: heur.cClassTrib, conf: "media", itens: [] };
+    else e = { c: "000001", conf: ncm.length === 8 ? "alta" : "media", itens: [] };
+  }
+  e.heur = heur;
+  e.aplicaveis = ap;
+  e.fora = filtra ? [...R.padraoZero, ...R.padrao60].filter(c => codes.has(c) && !ok(c)) : [];
+  CACHE_ESP.set(key, e);
+  return e;
+}
+
+/* ================= CFOP ================= */
+function tipoOperacao(cfop) {
+  const c = String(cfop || "");
+  if (c.length !== 4) return "outra";
+  const f = c[0], n = +c.slice(1);
+  if (f === "3" || f === "7") return f === "7" ? "exportacao" : "importacao";
+  if ((n >= 101 && n <= 125) || (n >= 401 && n <= 405) || n === 501 || n === 502 || (n >= 651 && n <= 656) || n === 667) return "venda";
+  if ((n >= 201 && n <= 211) || (n >= 410 && n <= 413) || n === 503 || n === 553 || n === 555 || n === 556 || (n >= 660 && n <= 662) || n === 918 || n === 919 || n === 921) return "devolucao";
+  if ((n >= 151 && n <= 159) || n === 408 || n === 409 || n === 552 || n === 557 || n === 658 || n === 659) return "transferencia";
+  if (n === 910 || n === 911) return "bonificacao";
+  return "outra";
+}
+const NOME_OP = { servico: "Serviço (NFS-e)", venda: "Venda", devolucao: "Devolução", transferencia: "Transferência", bonificacao: "Bonificação/brinde", importacao: "Importação", exportacao: "Exportação", outra: "Remessa/outra" };
+
+/* ================= leitura do XML ================= */
+function T(el, tag) { if (!el) return null; return el.getElementsByTagNameNS("*", tag)[0] || el.getElementsByTagName(tag)[0] || null; }
+function tx(el, tag) { const n = T(el, tag); return n ? n.textContent.trim() : ""; }
+function nf(v) { const x = parseFloat(String(v || "").replace(",", ".")); return isFinite(x) ? x : 0; }
+function nfOrNull(v) { if (v === "" || v == null) return null; const x = parseFloat(v); return isFinite(x) ? x : null; }
+function lerGrupoEnte(g, pTag, vTag) {
+  if (!g) return null;
+  const red = T(g, "gRed");
+  return { p: nf(tx(g, pTag)), pRed: red ? nf(tx(red, "pRedAliq")) : null, pEf: red ? nfOrNull(tx(red, "pAliqEfet")) : null, v: nf(tx(g, vTag)) };
+}
+function child(el, name) { if (!el) return null; for (const c of el.children) if (c.localName === name) return c; return null; }
+function parseNFSe(inf, origem) {
+  const dps = T(inf, "infDPS"), emit = child(inf, "emit"), prest = T(dps, "prest"), toma = T(dps, "toma"), cServ = T(dps, "cServ");
+  let ibCalc = null, ibDecl = null;
+  for (const el of inf.getElementsByTagNameNS("*", "IBSCBS")) { if (el.parentNode === inf) ibCalc = el; else if (el.parentNode && el.parentNode.localName === "infDPS") ibDecl = el; }
+  const cTrib = tx(cServ, "cTribNac");
+  const itemLC = cTrib.length >= 4 ? (+cTrib.slice(0, 2)) + "." + cTrib.slice(2, 4) : "";
+  const opSN = tx(T(prest, "regTrib"), "opSimpNac");
+  const vServ = nf(tx(T(dps, "vServPrest"), "vServ"));
+  const vISS = nf(tx(child(inf, "valores"), "vISSQN"));
+  let ib = null;
+  if (ibDecl) {
+    const g = T(ibDecl, "gIBSCBS"), vals = ibCalc ? child(ibCalc, "valores") : null, tot = ibCalc ? child(ibCalc, "totCIBS") : null;
+    const uf = child(vals, "uf"), mun = child(vals, "mun"), fed = child(vals, "fed");
+    ib = {
+      cst: tx(g, "CST"), cClassTrib: tx(g, "cClassTrib"), cIndOp: tx(ibDecl, "cIndOp"),
+      vBC: vals ? nf(tx(vals, "vBC")) : 0,
+      uf: uf ? { p: nf(tx(uf, "pIBSUF")), pRed: nfOrNull(tx(uf, "pRedAliqUF")), pEf: nfOrNull(tx(uf, "pAliqEfetUF")), v: nf(tx(tot, "vIBSUF")) } : null,
+      mun: mun ? { p: nf(tx(mun, "pIBSMun")), pRed: nfOrNull(tx(mun, "pRedAliqMun")), pEf: nfOrNull(tx(mun, "pAliqEfetMun")), v: nf(tx(tot, "vIBSMun")) } : null,
+      cbs: fed ? { p: nf(tx(fed, "pCBS")), pRed: nfOrNull(tx(fed, "pRedAliqCBS")), pEf: nfOrNull(tx(fed, "pAliqEfetCBS")), v: nf(tx(T(tot, "gCBS"), "vCBS")) } : null,
+      temGrupo: !!vals
+    };
+  }
+  return [{
+    origem, doc: "nfse", chave: (inf.getAttribute("Id") || "").replace(/^NFS/, ""), mod: "NFS-e", nNF: tx(inf, "nNFSe"), serie: tx(dps, "serie"),
+    dhEmi: (tx(dps, "dCompet") || tx(dps, "dhEmi")).slice(0, 10), tpNF: "1",
+    emitCNPJ: tx(emit, "CNPJ") || tx(emit, "CPF"), emitNome: tx(emit, "xNome"), crt: opSN === "1" ? "3" : (opSN ? "1" : ""), opSN, uf: "",
+    destCNPJ: toma ? (tx(toma, "CNPJ") || tx(toma, "CPF")) : "", destNome: toma ? tx(toma, "xNome") : "Tomador não identificado",
+    nItem: "1", cProd: cTrib, xProd: tx(cServ, "xDescServ") || tx(inf, "xTribNac"), ncm: "", nbs: tx(cServ, "cNBS"), itemLC, xNBS: tx(inf, "xNBS"),
+    cfop: "", vProd: vServ, vDesc: vISS, ib
+  }];
+}
+function parseNFe(text, origem) {
+  const doc = new DOMParser().parseFromString(text, "application/xml");
+  if (doc.getElementsByTagName("parsererror").length) return null;
+  const infS = T(doc, "infNFSe"); if (infS) return parseNFSe(infS, origem);
+  const inf = T(doc, "infNFe"); if (!inf) return null;
+  const ide = T(inf, "ide"), emit = T(inf, "emit"), dest = T(inf, "dest");
+  const chave = (inf.getAttribute("Id") || "").replace(/^NFe/, "");
+  const head = {
+    origem, chave, mod: tx(ide, "mod"), nNF: tx(ide, "nNF"), serie: tx(ide, "serie"),
+    dhEmi: (tx(ide, "dhEmi") || tx(ide, "dEmi")).slice(0, 10), tpNF: tx(ide, "tpNF"),
+    emitCNPJ: tx(emit, "CNPJ") || tx(emit, "CPF"), emitNome: tx(emit, "xNome"), crt: tx(emit, "CRT"), uf: tx(T(emit, "enderEmit"), "UF"),
+    destCNPJ: dest ? (tx(dest, "CNPJ") || tx(dest, "CPF")) : "", destNome: dest ? tx(dest, "xNome") : "Consumidor final"
+  };
+  const out = [];
+  const dets = inf.getElementsByTagNameNS("*", "det");
+  for (const det of dets) {
+    const prod = T(det, "prod"), imp = T(det, "imposto");
+    const ibEl = imp ? (imp.getElementsByTagNameNS("*", "IBSCBS")[0] || null) : null;
+    let ib = null;
+    if (ibEl) {
+      const g = T(ibEl, "gIBSCBS");
+      ib = {
+        cst: tx(ibEl, "CST"), cClassTrib: tx(ibEl, "cClassTrib"),
+        vBC: g ? nf(tx(g, "vBC")) : 0,
+        uf: lerGrupoEnte(g && T(g, "gIBSUF"), "pIBSUF", "vIBSUF"),
+        mun: lerGrupoEnte(g && T(g, "gIBSMun"), "pIBSMun", "vIBSMun"),
+        cbs: lerGrupoEnte(g && T(g, "gCBS"), "pCBS", "vCBS"),
+        temGrupo: !!g
+      };
+    }
+    out.push({
+      ...head, nItem: det.getAttribute("nItem"),
+      cProd: tx(prod, "cProd"), xProd: tx(prod, "xProd"), ncm: tx(prod, "NCM").replace(/\D/g, ""), cfop: tx(prod, "CFOP"),
+      vProd: nf(tx(prod, "vProd")), vDesc: nf(tx(prod, "vDesc")), ib
+    });
+  }
+  return out;
+}
+async function lerArquivos(files, origem, onProg) {
+  const textos = [];
+  for (const f of files) {
+    if (/\.zip$/i.test(f.name)) {
+      if (!window.JSZip) { toast("Não foi possível abrir ZIP. Envie os XMLs soltos."); continue; }
+      const z = await JSZip.loadAsync(f);
+      for (const name of Object.keys(z.files)) if (/\.xml$/i.test(name) && !z.files[name].dir) textos.push(await z.files[name].async("string"));
+    } else textos.push(await f.text());
+  }
+  const itens = []; let i = 0;
+  for (const t of textos) { const r = parseNFe(t, origem); if (r) itens.push(...r); if (++i % 200 === 0) { onProg && onProg(i / textos.length); await new Promise(r => setTimeout(r)); } }
+  return { itens, xmls: textos.length };
+}
+
+/* ================= validação ================= */
+function obrigatorio(it) {
+  const d = it.dhEmi || "";
+  if (it.crt === "3") return d >= R.obrigatoriedade.regimeNormal;
+  return d >= R.obrigatoriedade.simples;
+}
+function redAplicada(it) {
+  const ib = it.ib; if (!ib) return null;
+  const ct = R.classes[ib.cClassTrib];
+  const rC = ib.cbs && ib.cbs.pRed != null ? ib.cbs.pRed : (ct ? ct.rCBS : 0);
+  const rI = ib.uf && ib.uf.pRed != null ? ib.uf.pRed : (ct ? ct.rIBS : 0);
+  return { cbs: rC, ibs: rI };
+}
+/* ================= validação de serviços (NFS-e Nacional) ================= */
+let NFSE_IDX = new Map();
+function servPermitidos(nbs, item, cIndOp, data) {
+  const pega = (comOp) => { const s = new Set(); for (const r of NFSE_IDX.get(nbs) || []) { if (r[1] !== item) continue; if (comOp && r[2] !== cIndOp) continue; if (r[4] > data || (r[5] && r[5] < data)) continue; s.add(r[3]); } return s; };
+  let s = cIndOp ? pega(true) : new Set(), semOp = false;
+  if (!s.size) { s = pega(false); semOp = !!cIndOp && s.size > 0; }
+  return { perm: s, semOp };
+}
+const fmtNBS = d => d && d.length === 9 ? `${d[0]}.${d.slice(1, 5)}.${d.slice(5, 7)}.${d.slice(7)}` : (d || "");
+function validarServico(it) {
+  const ib = it.ib, data = it.dhEmi || new Date().toISOString().slice(0, 10), vig = R.aliquotas.vigente, ano = data.slice(0, 4);
+  let { perm, semOp } = it.nbs && it.itemLC ? servPermitidos(it.nbs, it.itemLC, ib ? ib.cIndOp : "", data) : { perm: new Set(), semOp: false };
+  let porItem = false;
+  if (!it.nbs && it.itemLC) {
+    // sem NBS: usa os enquadramentos previstos para o item da LC 116 em qualquer NBS (estimativa)
+    for (const rows of NFSE_IDX.values()) for (const r of rows) if (r[1] === it.itemLC && r[4] <= data && (!r[5] || r[5] >= data)) perm.add(r[3]);
+    porItem = perm.size > 0;
+  }
+  const filtra = it.origem === "S";
+  const okc = c => c === "000001" || !filtra || (PERF.allowedServ ? PERF.allowedServ.has(c) : !R.condServico.includes(c));
+  const elegiveis = [...perm].filter(c => R.classes[c] && ["000", "200", "011"].includes(R.classes[c].cst) && okc(c));
+  let exp = "000001";
+  for (const c of elegiveis) if (R.classes[c].rCBS > (R.classes[exp] ? R.classes[exp].rCBS : 0)) exp = c;
+  if (ib && elegiveis.includes(ib.cClassTrib) && R.classes[ib.cClassTrib].rCBS === R.classes[exp].rCBS) exp = ib.cClassTrib;
+  const ctE = R.classes[exp], ct = ib ? R.classes[ib.cClassTrib] : null;
+  const probs = []; let status = "ok", tipoErro = "";
+  const base = ib && ib.vBC ? ib.vBC : Math.max(0, it.vProd - it.vDesc);
+  const listaPerm = [...perm].join(", ");
+  if (!ib) {
+    if (it.crt === "3") probs.push({ sev: "ver", msg: "NFS-e sem grupo IBS/CBS.", fix: `Parametrizar CST ${ctE.cst} e cClassTrib ${exp}${it.nbs ? "" : ", e informar o NBS do serviço"}.` });
+    else status = "dispensado";
+  } else {
+    if (!it.nbs) probs.push({ sev: "ver", msg: "NBS não informado na NFS-e. Sem ele não dá para confirmar o enquadramento.", fix: "Informar o código NBS do serviço no emissor." });
+    if (!ct) probs.push({ sev: "err", msg: `cClassTrib ${ib.cClassTrib} não existe na tabela vigente.`, fix: `Usar cClassTrib ${exp}.` });
+    else if (ib.cClassTrib.slice(0, 3) !== ib.cst) probs.push({ sev: "err", msg: `CST ${ib.cst} incompatível com o cClassTrib ${ib.cClassTrib}.`, fix: `Ajustar CST para ${ct.cst}.` });
+    if (ib.temGrupo && ano === String(vig.ano)) {
+      if (ib.cbs && Math.abs(ib.cbs.p - vig.cbs) > 0.001) probs.push({ sev: "err", msg: `Alíquota CBS ${pct(ib.cbs.p)}; a vigente em ${vig.ano} é ${pct(vig.cbs)}.`, fix: `Ajustar para ${pct(vig.cbs)}.` });
+      if (ib.uf && Math.abs(ib.uf.p - vig.ibsUF) > 0.001) probs.push({ sev: "err", msg: `Alíquota IBS UF ${pct(ib.uf.p)}; a vigente em ${vig.ano} é ${pct(vig.ibsUF)}.`, fix: `Ajustar para ${pct(vig.ibsUF)}.` });
+    }
+    if (ct && ib.temGrupo) {
+      const rc = ib.cbs && ib.cbs.pRed != null ? ib.cbs.pRed : 0;
+      if (Math.abs(rc - ct.rCBS) > 0.001) probs.push({ sev: "err", msg: `Redução informada de ${pct(rc)}, mas o cClassTrib ${ib.cClassTrib} prevê ${pct(ct.rCBS)}.`, fix: `Ajustar a redução para ${pct(ct.rCBS)}.` });
+      const calc = g => g ? base * g.p / 100 * (1 - (g.pRed || 0) / 100) : 0;
+      const dif = Math.abs(calc(ib.cbs) - (ib.cbs ? ib.cbs.v : 0)) + Math.abs(calc(ib.uf) - (ib.uf ? ib.uf.v : 0));
+      if (dif > 0.03 + base * 0.00001) probs.push({ sev: "err", msg: "Valor de IBS/CBS não confere com base x alíquota x (1 - redução).", fix: "Revisar o cálculo no emissor." });
+    }
+    if (ct && it.nbs) {
+      const rA = redAplicada(it).cbs, rE = ctE.rCBS;
+      if (!perm.size) probs.push({ sev: "ver", msg: `A combinação NBS ${fmtNBS(it.nbs)} e item ${it.itemLC} da LC 116 não consta da tabela da NFS-e Nacional.`, fix: "Conferir o NBS e o código de tributação nacional do serviço." });
+      else if (!perm.has(ib.cClassTrib)) {
+        if (rA > rE + 0.001) { probs.push({ sev: "risk", msg: `cClassTrib ${ib.cClassTrib} não é permitido para este serviço. Permitidos: ${listaPerm}.`, fix: `Usar CST ${ctE.cst}, cClassTrib ${exp}.` }); tipoErro = "menos"; }
+        else { probs.push({ sev: "err", msg: `cClassTrib ${ib.cClassTrib} não é permitido para este serviço. Permitidos: ${listaPerm}.`, fix: `Usar CST ${ctE.cst}, cClassTrib ${exp}.` }); tipoErro = rA + 0.001 < rE ? "mais" : "estrutura"; }
+      } else if (filtra && R.condServico.includes(ib.cClassTrib) && !okc(ib.cClassTrib)) {
+        probs.push({ sev: PERF.allowedServ ? "risk" : "ver", msg: `O código ${ib.cClassTrib} (${ct.nome}) depende de requisitos do prestador.`, fix: PERF.allowedServ ? `O ramo correspondente não está marcado no perfil. Se não se aplicar, usar ${exp}.` : `Confirme os requisitos e marque o ramo no perfil; senão, usar ${exp}.` });
+        if (PERF.allowedServ) tipoErro = "menos";
+      } else if (rA + 0.001 < rE) {
+        probs.push({ sev: "err", msg: `Benefício não aplicado. O serviço permite ${rE === 100 ? "alíquota zero" : "redução de " + pct(rE)} (${exp}).`, fix: `Alterar para CST ${ctE.cst}, cClassTrib ${exp}.` }); tipoErro = "mais";
+      }
+      if (semOp) probs.push({ sev: "ver", msg: `Indicador de operação (cIndOp ${ib.cIndOp}) não previsto para este serviço na data da nota.`, fix: "Conferir o cIndOp no emissor." });
+    }
+  }
+  if (probs.some(p => p.sev === "err")) status = "erro";
+  else if (probs.some(p => p.sev === "risk")) status = "risco";
+  else if (probs.some(p => p.sev === "ver")) status = "verificar";
+  if (!tipoErro && status === "erro") tipoErro = "estrutura";
+  const imp = calcImpacto(it, ib, status, ctE, base, ano);
+  if (porItem && status === "dispensado") probs.push({ sev: "ver", msg: `Sem NBS na nota. Pelo item ${it.itemLC} da LC 116, o enquadramento provável é ${exp} (${ctE.nome}).`, fix: `Cadastrar o NBS do serviço e parametrizar CST ${ctE.cst}, cClassTrib ${exp}.` });
+  return { ...it, op: "servico", esp: { c: exp, conf: porItem ? "media" : "alta", itens: [], aplicaveis: [], perm: [...perm] }, status, tipoErro, probs, base, imp };
+}
+function calcImpacto(it, ib, status, ctE, base, ano) {
+  const imp = { v2026: 0, c2027: 0, pleno: 0, potencial: 0 }, vig = R.aliquotas.vigente, cen = S.cen;
+  const rA = redAplicada(it), rE = { cbs: ctE.rCBS, ibs: ctE.rIBS };
+  if (rA) {
+    const dR = { cbs: (rE.cbs - rA.cbs) / 100, ibs: (rE.ibs - rA.ibs) / 100 };
+    const destacado = (ib.cbs ? ib.cbs.v : 0) + (ib.uf ? ib.uf.v : 0) + (ib.mun ? ib.mun.v : 0);
+    const correto = base * (vig.cbs * (1 - rE.cbs / 100) + vig.ibsUF * (1 - rE.ibs / 100) + vig.ibsMun * (1 - rE.ibs / 100)) / 100;
+    const v2026 = ano === String(vig.ano) && ib.temGrupo ? destacado - correto : base * (vig.cbs * dR.cbs + (vig.ibsUF + vig.ibsMun) * dR.ibs) / 100;
+    const c27 = base * (cen.c27 * dR.cbs + cen.i27 * dR.ibs) / 100;
+    const pl = base * (cen.cP * dR.cbs + cen.iP * dR.ibs) / 100;
+    if (status === "erro" || status === "risco") { imp.v2026 = v2026; imp.c2027 = c27; imp.pleno = pl; }
+    else if (status === "verificar") imp.potencial = pl;
+  } else if (status === "dispensado" || status === "erro" || status === "verificar") {
+    imp.potencial = base * (cen.cP * rE.cbs + cen.iP * rE.ibs) / 10000;
+  }
+  return imp;
+}
+
+function validar(it) {
+  if (it.doc === "nfse") return validarServico(it);
+  const op = tipoOperacao(it.cfop);
+  const e = esperado(it.ncm, it.origem === "E" ? "E" : (op === "venda" ? "SV" : "S"));
+  const ctE = R.classes[e.c];
+  const ib = it.ib;
+  const ct = ib ? R.classes[ib.cClassTrib] : null;
+  const probs = [];   // {sev:'err'|'risk'|'ver', msg, fix}
+  let status = "ok", tipoErro = "";
+  const base = ib && ib.vBC ? ib.vBC : Math.max(0, it.vProd - it.vDesc);
+  const ano = (it.dhEmi || "").slice(0, 4);
+  const vig = R.aliquotas.vigente;
+
+  if (!/^\d{8}$/.test(it.ncm)) probs.push({ sev: "ver", msg: "NCM ausente ou com menos de 8 dígitos.", fix: "Corrigir o NCM no cadastro do produto." });
+
+  if (!ib) {
+    if (obrigatorio(it)) probs.push({ sev: "err", msg: "Grupo IBS/CBS não informado no item. Nota sujeita a rejeição.", fix: e.conf === "media" && e.c !== "000001" ? `Parametrizar o grupo IBS/CBS: se o produto corresponder ao anexo indicado, CST ${ctE.cst} e cClassTrib ${e.c}; caso contrário, CST 000 e cClassTrib 000001.` : `Parametrizar CST ${ctE.cst} e cClassTrib ${e.c} no cadastro do produto.` });
+    else status = "dispensado";
+  } else {
+    if (!ct) probs.push({ sev: "err", msg: `cClassTrib ${ib.cClassTrib} não existe na tabela vigente.`, fix: `Usar cClassTrib ${e.c}.` });
+    else if (ib.cClassTrib.slice(0, 3) !== ib.cst) probs.push({ sev: "err", msg: `CST ${ib.cst} incompatível com o cClassTrib ${ib.cClassTrib} (deveria ser ${ct.cst}).`, fix: `Ajustar CST para ${ct.cst}.` });
+    if (ib.temGrupo && ano === String(vig.ano)) {
+      if (ib.cbs && Math.abs(ib.cbs.p - vig.cbs) > 0.001) probs.push({ sev: "err", msg: `Alíquota CBS ${pct(ib.cbs.p)}; a vigente em ${vig.ano} é ${pct(vig.cbs)}.`, fix: `Ajustar pCBS para ${pct(vig.cbs)}.` });
+      if (ib.uf && Math.abs(ib.uf.p - vig.ibsUF) > 0.001) probs.push({ sev: "err", msg: `Alíquota IBS UF ${pct(ib.uf.p)}; a vigente em ${vig.ano} é ${pct(vig.ibsUF)}.`, fix: `Ajustar pIBSUF para ${pct(vig.ibsUF)}.` });
+    }
+    if (ct && ib.temGrupo) {
+      const rc = ib.cbs && ib.cbs.pRed != null ? ib.cbs.pRed : 0;
+      if (Math.abs(rc - ct.rCBS) > 0.001) probs.push({ sev: "err", msg: `Redução informada de ${pct(rc)}, mas o cClassTrib ${ib.cClassTrib} prevê ${pct(ct.rCBS)}.`, fix: `Ajustar pRedAliq para ${pct(ct.rCBS)}.` });
+      const calc = (g) => g ? base * g.p / 100 * (1 - (g.pRed || 0) / 100) : 0;
+      const dif = Math.abs(calc(ib.cbs) - (ib.cbs ? ib.cbs.v : 0)) + Math.abs(calc(ib.uf) - (ib.uf ? ib.uf.v : 0));
+      if (dif > 0.02 + base * 0.00001) probs.push({ sev: "err", msg: "Valor de IBS/CBS não confere com base x alíquota x (1 - redução).", fix: "Revisar a regra de cálculo do emissor." });
+    }
+    // classificação por NCM (somente vendas)
+    if (op === "venda" && ct) {
+      const rA = redAplicada(it), rE = { cbs: ctE.rCBS, ibs: ctE.rIBS };
+      const codigoValido = e.aplicaveis.some(a => a.c === ib.cClassTrib);
+      if (ib.cClassTrib === e.c) {
+        /* correto; quando o anexo exige descrição específica, a aba de itens mostra "confirmar descrição" */
+      } else if (R.governo.includes(ib.cClassTrib) && codigoValido) {
+        if (PERF.gov) probs.push({ sev: "ver", msg: `cClassTrib exclusivo de venda a órgão público (${ct.cond.toLowerCase()}).`, fix: `Confirmar que o destinatário (${it.destNome || "não informado"}) é órgão público; senão, usar ${e.c}.` });
+        else { probs.push({ sev: "risk", msg: "Código exclusivo de venda a órgão público, e o perfil não indica esse tipo de venda.", fix: `Usar CST ${ctE.cst}, cClassTrib ${e.c}. Se vender para governo, marque a opção no perfil.` }); tipoErro = "menos"; }
+      } else if (ct.cond && codigoValido) {
+        if (it.origem === "S" && PERF.allowed && !PERF.allowed.has(ib.cClassTrib)) { probs.push({ sev: "risk", msg: `cClassTrib de condição específica (${ct.cond.toLowerCase()}) incompatível com o perfil da empresa.`, fix: `Usar CST ${ctE.cst}, cClassTrib ${e.c}.` }); tipoErro = "menos"; }
+        else probs.push({ sev: "ver", msg: `cClassTrib condicional: ${ct.cond.toLowerCase()}.`, fix: `Se a condição não se aplicar, usar ${e.c}.` });
+      } else if (it.origem === "S" && PERF.allowed && codigoValido && !PERF.allowed.has(ib.cClassTrib)) {
+        const rn = ramoDoCodigo(ib.cClassTrib);
+        probs.push({ sev: "ver", msg: `Código de um ramo não marcado no perfil${rn ? ` (${rn})` : ""}.`, fix: `Se a empresa atua nesse ramo, marque-o no perfil; senão, usar ${e.c}.` });
+      } else if (e.heur && (ib.cClassTrib === e.heur.cClassTrib || ib.cClassTrib === "000001")) {
+        probs.push({ sev: "ver", msg: e.heur.msg, fix: `Confirmar e, se aplicável, usar ${e.heur.cClassTrib}.` });
+      } else if (rA.cbs + 0.001 < rE.cbs) {
+        if (e.conf === "media") probs.push({ sev: "ver", msg: `Pode ter direito a ${ctE.rCBS === 100 ? "alíquota zero" : "redução de " + pct(ctE.rCBS)} (${e.c}). O anexo exige descrição específica.`, fix: `Se o produto corresponder ao anexo, usar CST ${ctE.cst}, cClassTrib ${e.c}.` });
+        else { probs.push({ sev: "err", msg: `Benefício não aplicado. O NCM dá direito a ${ctE.rCBS === 100 ? "alíquota zero" : "redução de " + pct(ctE.rCBS)}.`, fix: `Alterar para CST ${ctE.cst}, cClassTrib ${e.c}, pRedAliq ${pct(ctE.rCBS)}.` }); tipoErro = "mais"; }
+      } else if (rA.cbs > rE.cbs + 0.001) {
+        if (codigoValido && e.conf === "media") probs.push({ sev: "ver", msg: "Benefício aplicado depende de descrição específica do anexo.", fix: "Confirmar enquadramento; se não corresponder, usar " + e.c + "." });
+        else { probs.push({ sev: "risk", msg: `Benefício indevido. O NCM não consta do anexo do cClassTrib ${ib.cClassTrib}.`, fix: `Alterar para CST ${ctE.cst}, cClassTrib ${e.c}${ctE.rCBS ? ", pRedAliq " + pct(ctE.rCBS) : ", sem redução"}.` }); tipoErro = "menos"; }
+      } else {
+        probs.push({ sev: "ver", msg: `Código divergente do esperado (${e.c}), sem diferença de carga.`, fix: `Usar cClassTrib ${e.c} para manter a escrituração correta.` });
+      }
+    } else if (op !== "venda" && !probs.length) status = "nao_validado";
+  }
+  if (probs.some(p => p.sev === "err")) status = "erro";
+  else if (probs.some(p => p.sev === "risk")) status = "risco";
+  else if (probs.some(p => p.sev === "ver")) status = "verificar";
+  if (!tipoErro && status === "erro") tipoErro = "estrutura";
+
+  // impacto financeiro (positivo = paga a mais)
+  const imp = { v2026: 0, c2027: 0, pleno: 0, potencial: 0 };
+  if (op === "venda" || it.origem === "E") {
+    const rA = redAplicada(it);
+    const rE = { cbs: ctE.rCBS, ibs: ctE.rIBS };
+    if (rA) {
+      const dR = { cbs: (rE.cbs - rA.cbs) / 100, ibs: (rE.ibs - rA.ibs) / 100 };
+      const cen = S.cen;
+      const destacado = (ib.cbs ? ib.cbs.v : 0) + (ib.uf ? ib.uf.v : 0) + (ib.mun ? ib.mun.v : 0);
+      const correto = base * (vig.cbs * (1 - rE.cbs / 100) + vig.ibsUF * (1 - rE.ibs / 100) + vig.ibsMun * (1 - rE.ibs / 100)) / 100;
+      const v2026 = ano === String(vig.ano) && ib.temGrupo ? destacado - correto : base * (vig.cbs * dR.cbs + (vig.ibsUF + vig.ibsMun) * dR.ibs) / 100;
+      const c27 = base * (cen.c27 * dR.cbs + cen.i27 * dR.ibs) / 100;
+      const pl = base * (cen.cP * dR.cbs + cen.iP * dR.ibs) / 100;
+      if (status === "erro" || status === "risco") { imp.v2026 = v2026; imp.c2027 = c27; imp.pleno = pl; }
+      else if (status === "verificar") imp.potencial = pl;
+    } else if (status === "dispensado" || (status === "erro" && !ib)) {
+      // sem grupo: mostra o que a classificação correta representa frente à tributação integral
+      imp.potencial = base * (S.cen.cP * ctE.rCBS + S.cen.iP * ctE.rIBS) / 10000;
+    }
+  }
+  return { ...it, op, esp: e, status, tipoErro, probs, base, imp };
+}
+
+function agrupar(vals) {
+  const m = new Map();
+  for (const v of vals) {
+    const ib = v.ib;
+    const k = [v.origem, v.origem === "E" ? v.emitCNPJ : "", v.doc || "nfe", v.cProd, v.ncm, v.nbs || "", ib ? ib.cst : "-", ib ? ib.cClassTrib : "-", v.status, v.op].join("|");
+    let g = m.get(k);
+    if (!g) { g = { k, origem: v.origem, doc: v.doc || "nfe", nbs: v.nbs || "", itemLC: v.itemLC || "", cProd: v.cProd, xProd: v.xProd, ncm: v.ncm, cst: ib ? ib.cst : "", cct: ib ? ib.cClassTrib : "", rA: redAplicada(v), esp: v.esp, status: v.status, tipoErro: v.tipoErro, probs: v.probs, op: v.op, cfops: new Set(), notas: new Set(), base: 0, imp: { v2026: 0, c2027: 0, pleno: 0, potencial: 0 }, forn: v.emitCNPJ, fornNome: v.emitNome, n: 0 }; m.set(k, g); }
+    g.n++; g.base += v.base; g.cfops.add(v.cfop); g.notas.add(v.nNF);
+    for (const x in g.imp) g.imp[x] += v.imp[x];
+  }
+  return [...m.values()];
+}
+
+function processar(itensE, itensS) {
+  // remove itens duplicados (mesma chave + nItem)
+  const seen = new Set(), all = [];
+  for (const it of [...itensS, ...itensE]) { const k = it.chave + "#" + it.nItem + "#" + it.origem; if (seen.has(k)) continue; seen.add(k); all.push(it); }
+  const vals = all.map(it => validar(it));
+  const S_ = vals.filter(v => v.origem === "S"), E_ = vals.filter(v => v.origem === "E");
+  const meses = new Set(S_.map(v => (v.dhEmi || "").slice(0, 7)).filter(Boolean));
+  const nMeses = Math.max(1, meses.size || new Set(E_.map(v => (v.dhEmi || "").slice(0, 7)).filter(Boolean)).size);
+  const emp = moda(S_.map(v => v.emitCNPJ)) || moda(E_.map(v => v.destCNPJ));
+  const empNome = (S_.find(v => v.emitCNPJ === emp) || {}).emitNome || (E_.find(v => v.destCNPJ === emp) || {}).destNome || "";
+  const crt = moda(S_.map(v => v.crt));
+  const groups = agrupar(vals);
+  const soma = (arr, f) => arr.reduce((a, v) => a + f(v), 0);
+  const sErr = S_.filter(v => v.status === "erro" || v.status === "risco");
+  const res = {
+    emp, empNome, crt, nMeses, meses: [...meses].sort(), xmls: S.nXmls || 0,
+    nItens: vals.length, nS: S_.length, nE: E_.length,
+    cont: contar(vals),
+    maisPleno: soma(S_, v => Math.max(0, v.imp.pleno)),
+    mais2027: soma(S_, v => Math.max(0, v.imp.c2027)),
+    mais2026: soma(S_, v => Math.max(0, v.imp.v2026)),
+    menosPleno: soma(S_, v => Math.min(0, v.imp.pleno)),
+    potencial: soma(S_, v => v.imp.potencial),
+    baseS: soma(S_, v => v.base), baseErr: soma(sErr, v => v.base)
+  };
+  S.items = vals; S.groups = groups; S.res = res;
+}
+function moda(arr) { const c = {}; let best = "", n = 0; for (const a of arr) { if (!a) continue; c[a] = (c[a] || 0) + 1; if (c[a] > n) { n = c[a]; best = a; } } return best; }
+function contar(vals) { const c = { ok: 0, erro: 0, risco: 0, verificar: 0, nao_validado: 0, dispensado: 0 }; for (const v of vals) c[v.status] = (c[v.status] || 0) + 1; return c; }
+
+/* ================= render ================= */
+const PILL = { ok: ["p-ok", "Correto"], erro: ["p-err", "Erro"], risco: ["p-risk", "Benefício indevido"], verificar: ["p-ver", "Verificar"], nao_validado: ["p-na", "Fora do escopo"], dispensado: ["p-na", "Dispensado"] };
+const codigoItem = g => g.doc === "nfse" ? `NBS ${g.nbs ? fmtNBS(g.nbs) : "não informado"} · LC 116 item ${g.itemLC || "?"}` : `NCM ${fmtNCM(g.ncm)}`;
+const codProd = g => g.doc === "nfse" ? `Cód. trib. nacional ${g.cProd}` : `Cód. ${g.cProd}`;
+const pill = s => `<span class="pill ${PILL[s][0]}">${PILL[s][1]}</span>`;
+const anual = v => v / S.res.nMeses * 12;
+function perfilTexto() {
+  const t = { comercio: "Comércio", servico: "Serviços", ambos: "Comércio e serviços" }[S.prof.tipo];
+  const out = ["Perfil: " + t];
+  for (const r of PERF.ramos || []) out.push(r.nome.split(" (")[0]);
+  if (!(PERF.ramos || []).length) out.push("todos os ramos");
+  if (S.prof.gov) out.push("vende a órgãos públicos");
+  return out;
+}
+function lawHTML(code, itens) {
+  const ct = R.classes[code]; if (!ct) return "";
+  const it = (itens || []).slice(0, 2).map(k => `<br>Anexo ${esc(k.replace("/", ", item "))}: ${esc((R.itensAnexo[k] || "").slice(0, 180))}${(R.itensAnexo[k] || "").length > 180 ? "…" : ""}`).join("");
+  if (!ct.lc) return `<div class="law">Tributação integral: o item não consta dos anexos de redução ou alíquota zero da LC 214/2025.</div>`;
+  return `<div class="law">${ct.url ? `<a href="${esc(ct.url)}" target="_blank" rel="noopener">LC 214/2025, ${esc(ct.lc)}</a>` : "LC 214/2025, " + esc(ct.lc)} · ${esc(ct.nome)}${it}</div>`;
+}
+function codeCell(cst, cct, r) { return cct ? `<span class="codeline">${esc(cst)} · ${esc(cct)}${r ? ` · ${pct(r.cbs)}` : ""}</span>` : `<span class="codeline">sem grupo IBS/CBS</span>`; }
+
+function render() {
+  const r = S.res;
+  $("#sampleNotice").hidden = !S.sample;
+  const simples = r.crt && r.crt !== "3";
+  const sn = $("#simplesNotice");
+  sn.hidden = !simples;
+  if (simples) sn.innerHTML = `<span><b>Empresa do Simples Nacional.</b> O preenchimento do grupo IBS/CBS passa a ser obrigatório em ${brDate(R.obrigatoriedade.simples)}. Use a aba Correções como roteiro de parametrização antes desse prazo. Para quem recolhe pelo DAS, os valores projetados medem o IBS/CBS destacado na nota; o efeito no caixa depende da forma de recolhimento escolhida a partir de 2027.</span>`;
+  $("#company").innerHTML = `<h2>${esc(r.empNome || "Empresa")}</h2><span class="mono">${esc(fmtDoc(r.emp))}</span><span>${r.meses.length ? "Período: " + r.meses.map(m => m.slice(5) + "/" + m.slice(0, 4)).join(", ") : ""}</span><span>${r.nS.toLocaleString("pt-BR")} itens de saída · ${r.nE.toLocaleString("pt-BR")} itens de entrada</span><div class="perfilchips">${perfilTexto().map(t => `<span>${esc(t)}</span>`).join("")}</div>`;
+  const errS = S.items.filter(v => v.origem === "S" && (v.status === "erro" || v.status === "risco")).length;
+  $("#kpis").innerHTML = `
+    <div class="kpi hero"><div class="lbl">Pagamento a maior por ano (regime pleno)</div><div class="val num">${brl0(anual(r.maisPleno))}</div><div class="sub">Projeção com IBS ${pct(S.cen.iP)} + CBS ${pct(S.cen.cP)} sobre o faturamento do período</div></div>
+    <div class="kpi"><div class="lbl">Impacto em 2027</div><div class="val num">${brl0(anual(r.mais2027))}</div><div class="sub">por ano, com CBS cheia (${pct(S.cen.c27)})</div></div>
+    <div class="kpi risk"><div class="lbl">Risco: recolhimento a menor</div><div class="val num">${brl0(Math.abs(anual(r.menosPleno)))}</div><div class="sub">por ano no regime pleno, sujeito a autuação</div></div>
+    <div class="kpi bad"><div class="lbl">Itens de saída com erro</div><div class="val num">${errS.toLocaleString("pt-BR")}</div><div class="sub">de ${r.nS.toLocaleString("pt-BR")} · ${r.cont.verificar} para verificar</div></div>`;
+  const nCorr = S.groups.filter(g => g.origem === "S" && ["erro", "risco", "verificar", "dispensado"].includes(g.status)).length;
+  const nForn = new Set(S.groups.filter(g => g.origem === "E" && ["erro", "risco"].includes(g.status)).map(g => g.forn)).size;
+  const tabs = [["resumo", "Resumo", ""], ["correcoes", "Correções", nCorr], ["fornecedores", "Fornecedores", nForn], ["itens", "Validação item a item", S.items.length], ["base", "Base legal", ""]];
+  $("#tabs").innerHTML = tabs.map(([id, nm, c]) => `<button class="tab" role="tab" id="t-${id}" aria-selected="${S.tab === id}" data-tab="${id}">${nm}${c !== "" ? `<span class="c ${id !== "itens" && c ? "err" : ""}">${c}</span>` : ""}</button>`).join("");
+  const P = { resumo: rResumo, correcoes: rCorrecoes, fornecedores: rFornecedores, itens: rItens, base: rBase };
+  $("#panes").innerHTML = `<div class="tabpane" role="tabpanel">${P[S.tab]()}</div>`;
+}
+
+function rResumo() {
+  const r = S.res;
+  const top = S.groups.filter(g => g.origem === "S" && g.imp.pleno !== 0).sort((a, b) => Math.abs(b.imp.pleno) - Math.abs(a.imp.pleno)).slice(0, 8);
+  const mx = Math.max(1, ...top.map(g => Math.abs(g.imp.pleno)));
+  const bars = top.length ? top.map(g => `<div class="bar"><span class="nm" title="${esc(g.xProd)}">${esc(g.xProd)}</span><span class="v">${brl0(anual(g.imp.pleno))}/ano</span><div class="track"><div class="fill ${g.imp.pleno < 0 ? "risk" : ""}" style="width:${(Math.abs(g.imp.pleno) / mx * 100).toFixed(1)}%"></div></div></div>`).join("") : `<div class="empty">Nenhum erro com impacto financeiro nas saídas.</div>`;
+  const c = r.cont;
+  return `<div class="grid2">
+    <div class="card"><h3>Produtos que mais custam por erro de classificação</h3><p class="legend">Laranja: paga a mais. Âmbar: recolhe a menor (risco). Valores anualizados no regime pleno.</p><div class="bars">${bars}</div></div>
+    <div class="card"><h3>Situação dos itens</h3><div class="statusgrid">
+      <div class="st">${pill("ok")}<b class="num">${c.ok}</b></div>
+      <div class="st">${pill("erro")}<b class="num">${c.erro}</b></div>
+      <div class="st">${pill("risco")}<b class="num">${c.risco}</b></div>
+      <div class="st">${pill("verificar")}<b class="num">${c.verificar}</b></div>
+      <div class="st">${pill("dispensado")}<b class="num">${c.dispensado}</b></div>
+      <div class="st">${pill("nao_validado")}<b class="num">${c.nao_validado}</b></div>
+    </div>
+    <p class="legend">"Fora do escopo": devoluções, transferências e remessas, conferidas só na estrutura. "Dispensado": nota sem grupo IBS/CBS antes da obrigatoriedade.</p></div>
+  </div>
+  <div class="card"><h3>Como ler os valores</h3>
+    <p class="hint" style="font-size:14px">Em 2026 o IBS (${pct(R.aliquotas.vigente.ibsUF)}) e a CBS (${pct(R.aliquotas.vigente.cbs)}) são de teste: quem cumpre as obrigações acessórias não recolhe. O erro de classificação já aparece no destaque da nota (${brl(r.mais2026)} no período) e passa a custar dinheiro em 2027, quando a CBS entra cheia, e principalmente no regime pleno. Itens marcados como "Verificar" somam ${brl0(anual(r.potencial))}/ano de impacto potencial e precisam de confirmação da descrição do produto antes de virar correção.</p>
+  </div>`;
+}
+
+function rCorrecoes() {
+  const gs = S.groups.filter(g => g.origem === "S" && ["erro", "risco", "verificar", "dispensado"].includes(g.status))
+    .sort((a, b) => ({ erro: 0, risco: 1, verificar: 2, dispensado: 3 }[a.status] - { erro: 0, risco: 1, verificar: 2, dispensado: 3 }[b.status]) || Math.abs(b.imp.pleno) - Math.abs(a.imp.pleno));
+  if (!gs.length) return `<div class="card"><div class="empty">Nenhuma correção pendente nas notas de saída.</div></div>`;
+  const rows = gs.map(g => {
+    const ctE = R.classes[g.esp.c];
+    const muda = g.cct !== g.esp.c && g.status !== "verificar";
+    const atual = codeCell(g.cst, g.cct, g.rA);
+    const novo = `<span class="codeline to">${esc(ctE.cst)} · ${esc(g.esp.c)} · ${pct(ctE.rCBS)}</span>`;
+    const what = g.probs.map(p => `<p>${esc(p.msg)} <b>${esc(p.fix)}</b></p>`).join("") || (g.status === "dispensado" ? `<p>Nota emitida sem IBS/CBS (dispensada). <b>Parametrizar CST ${esc(ctE.cst)} e cClassTrib ${esc(g.esp.c)}.</b></p>` : "");
+    const imp = g.status === "verificar" || g.status === "dispensado" ? `<span class="money">${brl0(anual(g.imp.potencial))}</span><br><small class="hint">potencial</small>` : `<span class="money ${g.imp.pleno > 0 ? "pos" : "neg"}">${brl0(anual(g.imp.pleno))}</span>`;
+    return `<tr><td>${pill(g.status)}</td><td class="prod">${esc(g.xProd)}<small>${esc(codProd(g))} · ${esc(codigoItem(g))}</small></td>
+      <td>${muda ? `<span class="from">${atual}</span>` : atual}</td><td>${novo}</td>
+      <td class="todo">${what}${lawHTML(g.esp.c, g.esp.itens)}</td><td class="r num">${g.n}</td><td class="r">${imp}</td></tr>`;
+  }).join("");
+  return `<p class="legend">Cada linha é um produto. Ajuste o cadastro no sistema emissor: CST, cClassTrib e percentual de redução (pRedAliq). Impacto anualizado no regime pleno.</p>
+  <div class="tablewrap"><table><thead><tr><th>Situação</th><th>Produto</th><th>Como está</th><th>Como deve ficar</th><th>O que fazer</th><th class="r">Itens</th><th class="r">Impacto/ano</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function rFornecedores() {
+  const gs = S.groups.filter(g => g.origem === "E" && ["erro", "risco"].includes(g.status));
+  if (!gs.length) return `<div class="card"><div class="empty">${S.res.nE ? "Nenhuma divergência nas notas dos fornecedores." : "Envie as notas de entrada para conferir os fornecedores."}</div></div>`;
+  const by = {};
+  for (const g of gs) (by[g.forn] ||= { nome: g.fornNome, cnpj: g.forn, gs: [] }).gs.push(g);
+  return `<p class="legend">Erros na nota do fornecedor afetam o seu preço de compra e o crédito de IBS/CBS. Destaque a maior encarece a compra e o crédito excedente pode ser glosado. Destaque a menor reduz o seu crédito.</p>` +
+    Object.values(by).map((f, i) => {
+      const rows = f.gs.map(g => { const ctE = R.classes[g.esp.c]; return `<tr><td>${pill(g.status)}</td><td class="prod">${esc(g.xProd)}<small>${esc(codigoItem(g))} · ${g.doc === "nfse" ? "NFS-e" : "NF"} ${esc([...g.notas].slice(0, 4).join(", "))}${g.notas.size > 4 ? "…" : ""}</small></td><td>${codeCell(g.cst, g.cct, g.rA)}</td><td><span class="codeline to">${esc(ctE.cst)} · ${esc(g.esp.c)} · ${pct(ctE.rCBS)}</span></td><td class="todo">${g.probs.map(p => `<p>${esc(p.msg)}</p>`).join("")}</td></tr>`; }).join("");
+      const msg = `Prezados, ${f.nome},\n\nIdentificamos divergências na classificação do IBS/CBS (LC 214/2025) nas notas fiscais emitidas para ${S.res.empNome || "nossa empresa"} (CNPJ ${fmtDoc(S.res.emp)}):\n\n` +
+        f.gs.map(g => { const ctE = R.classes[g.esp.c]; return `- ${g.xProd} (${codigoItem(g)}): informado CST ${g.cst || "-"} / cClassTrib ${g.cct || "-"}; o correto é CST ${ctE.cst} / cClassTrib ${g.esp.c} (${ctE.lc}).`; }).join("\n") +
+        `\n\nSolicitamos a revisão do cadastro desses produtos nas próximas emissões.\n\nAtenciosamente.`;
+      return `<div class="card supplier"><header><h3>${esc(f.nome)}</h3><span>${esc(fmtDoc(f.cnpj))}</span></header>
+        <div class="tablewrap"><table><thead><tr><th>Situação</th><th>Produto</th><th>Nota do fornecedor</th><th>Correto</th><th>Divergência</th></tr></thead><tbody>${rows}</tbody></table></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span class="eyebrow">Mensagem para o fornecedor</span><button class="btn ghost sm" data-copy="msg${i}">Copiar mensagem</button></div>
+        <div class="msgbox" id="msg${i}">${esc(msg)}</div></div>`;
+    }).join("");
+}
+
+function rItens() {
+  const filtros = [["todos", "Todos"], ["erro", "Erro"], ["risco", "Benefício indevido"], ["verificar", "Verificar"], ["ok", "Correto"], ["outros", "Fora do escopo/dispensado"]];
+  const q = S.busca.trim().toLowerCase();
+  let gs = S.groups.filter(g => S.filtro === "todos" || (S.filtro === "outros" ? ["nao_validado", "dispensado"].includes(g.status) : g.status === S.filtro));
+  if (q) gs = gs.filter(g => (g.xProd + " " + g.cProd + " " + g.ncm + " " + g.cct + " " + (g.fornNome || "")).toLowerCase().includes(q));
+  gs.sort((a, b) => a.origem.localeCompare(b.origem) || b.base - a.base);
+  const lim = 400;
+  const rows = gs.slice(0, lim).map(g => `<tr><td>${g.origem === "S" ? "Saída" : "Entrada"}</td><td>${pill(g.status)}</td><td class="prod">${esc(g.xProd)}<small>${esc(codProd(g))}${g.origem === "E" ? " · " + esc(g.fornNome) : ""}</small></td><td class="mono">${g.doc === "nfse" ? esc(fmtNBS(g.nbs) || "sem NBS") + "<br><small class=\"hint\">LC 116 " + esc(g.itemLC) + "</small>" : esc(fmtNCM(g.ncm))}</td><td class="mono">${g.doc === "nfse" ? "NFS-e" : esc([...g.cfops].join(", "))}<br><small class="hint">${NOME_OP[g.op]}</small></td><td>${codeCell(g.cst, g.cct, g.rA)}</td><td><span class="codeline">${esc(R.classes[g.esp.c].cst)} · ${esc(g.esp.c)}</span>${g.esp.conf === "media" ? '<br><small class="hint">confirmar descrição</small>' : ""}</td><td class="r money">${brl(g.base)}</td><td class="r num">${g.n}</td></tr>`).join("");
+  return `<div class="filters">${filtros.map(([id, nm]) => `<button class="chip" data-filtro="${id}" aria-pressed="${S.filtro === id}">${nm}</button>`).join("")}<input id="busca" type="search" placeholder="Buscar produto, código, NCM ou fornecedor" value="${esc(S.busca)}"></div>
+  <div class="tablewrap"><table><thead><tr><th>Tipo</th><th>Situação</th><th>Produto</th><th>NCM / NBS</th><th>CFOP</th><th>Na nota (CST · cClassTrib · red.)</th><th>Esperado</th><th class="r">Base IBS/CBS</th><th class="r">Itens</th></tr></thead><tbody>${rows || `<tr><td colspan="9"><div class="empty">Nenhum item com esse filtro.</div></td></tr>`}</tbody></table></div>
+  ${gs.length > lim ? `<p class="legend">Mostrando ${lim} de ${gs.length} produtos. Use a busca ou exporte para Excel para ver todos.</p>` : ""}`;
+}
+
+function rBase() {
+  const m = R.meta, v = R.verificacao || {};
+  const nov = (R.novidades || []).slice().sort((a, b) => b.data.localeCompare(a.data));
+  return `<div class="grid2">
+  <div class="card"><h3>Novidades e prazos da reforma</h3><div class="timeline">${nov.map(n => `<div class="tl"><time>${brDate(n.data)}</time><div><h4><span class="tag">${esc(n.tipo)}</span>${esc(n.titulo)}</h4><p>${esc(n.texto)}</p>${n.fonte ? `<a href="${esc(n.fonte)}" target="_blank" rel="noopener">Fonte</a>` : ""}</div></div>`).join("")}</div></div>
+  <div class="card"><h3>Versão da base</h3>
+    <ul class="srclist">
+      <li><span>Última verificação</span><b>${brDate(v.data || m.geradoEm)}</b></li>
+      <li><span>Base oficial conhecida em</span><b>${brDate(m.baseConhecidaEm)}</b></li>
+      <li><span>Códigos cClassTrib vigentes</span><b class="num">${Object.keys(R.classes).length}</b></li>
+      <li><span>Vínculos NCM x anexos</span><b class="num">${R.vinculos.length}</b></li>
+      <li><span>Alíquotas ${R.aliquotas.vigente.ano}</span><b>CBS ${pct(R.aliquotas.vigente.cbs)} · IBS ${pct(R.aliquotas.vigente.ibsUF)}</b></li>
+    </ul>
+    ${v.resumo ? `<p class="hint">${esc(v.resumo)}</p>` : ""}
+    <h3 style="margin-top:6px">Fontes</h3>
+    <ul class="srclist">${m.fontes.map(f => `<li><span>${f.url ? `<a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.titulo)}</a>` : esc(f.titulo)}</span><b class="mono">${esc(f.versao)} ${f.data ? brDate(f.data) : ""}</b></li>`).join("")}</ul>
+    <h3 style="margin-top:6px">Atualização automática</h3>
+    <p class="hint">Toda segunda-feira uma rotina confere a tabela cClassTrib, a calculadora da Receita, alterações da LC 214/2025, resoluções do CGIBS e do Senado. Se houver mudança, a base é regenerada e esta página é republicada com a nova versão.</p>
+  </div></div>`;
+}
+
+/* ================= exportação ================= */
+async function exportar() {
+  if (!window.XLSX) return toast("Biblioteca de planilha indisponível.");
+  const dl = window.claude?.use ? await window.claude.use("downloads") : null;
+  if (window.claude?.use && !dl) return toast("Download indisponível nesta visualização.");
+  const r = S.res;
+  const wb = XLSX.utils.book_new();
+  const resumo = [["Validador IBS/CBS Smartcontax"], ["Empresa", r.empNome], ["CNPJ", fmtDoc(r.emp)], ["Período", r.meses.join(", ")], ["Perfil", perfilTexto().join("; ")], ["Base legal", $("#baseversao").textContent],
+    [], ["Pagamento a maior/ano (regime pleno)", +anual(r.maisPleno).toFixed(2)], ["Impacto/ano em 2027", +anual(r.mais2027).toFixed(2)], ["Risco recolhimento a menor/ano", +Math.abs(anual(r.menosPleno)).toFixed(2)], ["Impacto potencial (verificar)/ano", +anual(r.potencial).toFixed(2)],
+    [], ["Cenário 2027", `CBS ${S.cen.c27}% IBS ${S.cen.i27}%`], ["Cenário pleno", `CBS ${S.cen.cP}% IBS ${S.cen.iP}%`]];
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumo), "Resumo");
+  const linha = g => { const ctE = R.classes[g.esp.c]; return { Tipo: g.origem === "S" ? "Saída" : "Entrada", Situação: PILL[g.status][1], Fornecedor: g.origem === "E" ? g.fornNome : "", Documento: g.doc === "nfse" ? "NFS-e" : "NF-e", Código: g.cProd, Produto: g.xProd, "NCM/NBS": g.doc === "nfse" ? fmtNBS(g.nbs) : fmtNCM(g.ncm), "Item LC 116": g.itemLC || "", CFOP: [...g.cfops].join(", "), "CST atual": g.cst, "cClassTrib atual": g.cct, "Redução atual %": g.rA ? g.rA.cbs : "", "CST correto": ctE.cst, "cClassTrib correto": g.esp.c, "Redução correta %": ctE.rCBS, "Fundamento": `LC 214/2025, ${ctE.lc}`, "Anexo": (g.esp.itens || []).join("; "), "O que fazer": g.probs.map(p => p.msg + " " + p.fix).join(" | "), Itens: g.n, "Base IBS/CBS": +g.base.toFixed(2), "Impacto/ano pleno": +anual(g.imp.pleno).toFixed(2), "Impacto/ano 2027": +anual(g.imp.c2027).toFixed(2), "Potencial/ano": +anual(g.imp.potencial).toFixed(2) }; };
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(S.groups.filter(g => g.origem === "S" && ["erro", "risco", "verificar", "dispensado"].includes(g.status)).map(linha)), "Correções");
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(S.groups.filter(g => g.origem === "E" && ["erro", "risco"].includes(g.status)).map(linha)), "Fornecedores");
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(S.groups.map(linha)), "Validação");
+  const buf = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+  const nome = `Validacao_IBS_CBS_${(r.empNome || "empresa").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\w]+/g, "_").slice(0, 40)}.xlsx`;
+  if (!dl) { XLSX.writeFile(wb, nome); toast("Planilha gerada."); return; }   // site próprio: download direto do navegador
+  try { await dl.save({ filename: nome, data: new Blob([buf]) }); toast("Planilha salva."); }
+  catch (e) { if (e && e.code !== "declined") toast("Não foi possível salvar a planilha."); }
+}
+
+/* ================= exemplo ================= */
+function exemplo() {
+  const emp = { cnpj: "12345678000190", nome: "Mercado Bom Preço Exemplo Ltda", crt: "3" };
+  const v = R.aliquotas.vigente;
+  const mk = (origem, n, data, emit, dest, p, cst, cct, base, opts = {}) => {
+    const ct = R.classes[cct]; const red = opts.red ?? (ct ? ct.rCBS : 0);
+    const g = (al) => ({ p: al, pRed: red || opts.forceRed ? red : null, pEf: null, v: +(base * al / 100 * (1 - red / 100)).toFixed(2) });
+    return { origem, chave: origem + n + p[0], mod: "55", nNF: String(n), serie: "1", dhEmi: data, tpNF: "1", emitCNPJ: emit.cnpj, emitNome: emit.nome, crt: emit.crt, destCNPJ: dest.cnpj, destNome: dest.nome, nItem: "1", cProd: p[0], xProd: p[1], ncm: p[2], cfop: opts.cfop || "5102", vProd: base, vDesc: 0,
+      ib: opts.semGrupo ? null : { cst, cClassTrib: cct, vBC: base, uf: g(v.ibsUF), mun: { p: 0, pRed: null, v: 0 }, cbs: g(v.cbs), temGrupo: true } };
+  };
+  const cons = { cnpj: "", nome: "Consumidor final" };
+  const P = {
+    arroz: ["1001", "ARROZ TIPO 1 5KG", "10063021"], feijao: ["1002", "FEIJAO CARIOCA 1KG", "07133319"], cafe: ["1003", "CAFE TORRADO MOIDO 500G", "09012100"],
+    leite: ["1004", "LEITE UHT INTEGRAL 1L", "04012010"], refri: ["1005", "REFRIGERANTE COLA 2L", "22021000"], choc: ["1006", "CHOCOLATE AO LEITE 90G", "18063210"],
+    sabo: ["1007", "SABONETE GLICERINA 90G", "34011190"], pao: ["1008", "PAO FRANCES KG", "19059090"], tomate: ["1009", "TOMATE KG", "07020000"],
+    oleo: ["1010", "OLEO DE SOJA 900ML", "15079011"], papel: ["1011", "PAPEL HIGIENICO 12 ROLOS", "48181000"], mel: ["1012", "MEL PURO 500G", "04090000"],
+    milho: ["1013", "MILHO PIPOCA 500G", "10059010"]
+  };
+  const out = []; let n = 5100;
+  for (const d of ["2026-08-18", "2026-09-17"]) {
+    out.push(mk("S", n++, d, emp, cons, P.arroz, "000", "000001", 38400));
+    out.push(mk("S", n++, d, emp, cons, P.feijao, "200", "200034", 21500));
+    out.push(mk("S", n++, d, emp, cons, P.cafe, "200", "200003", 17800));
+    out.push(mk("S", n++, d, emp, cons, P.leite, "200", "200003", 26900));
+    out.push(mk("S", n++, d, emp, cons, P.refri, "000", "000001", 15200));
+    out.push(mk("S", n++, d, emp, cons, P.choc, "200", "200034", 9800));
+    out.push(mk("S", n++, d, emp, cons, P.sabo, "000", "000001", 7400));
+    out.push(mk("S", n++, d, emp, cons, P.pao, "000", "000001", 22600));
+    out.push(mk("S", n++, d, emp, cons, P.tomate, "200", "200014", 8300));
+    out.push(mk("S", n++, d, emp, cons, P.oleo, "200", "200034", 11900));
+    out.push(mk("S", n++, d, emp, cons, P.papel, "200", "200035", 9100, { red: 0, forceRed: true }));
+    out.push(mk("S", n++, d, emp, cons, P.mel, "200", "200034", 3200));
+    out.push(mk("S", n++, d, emp, cons, P.milho, "200", "200038", 2100));
+  }
+  const f1 = { cnpj: "45678912000155", nome: "Distribuidora Grãos do Planalto Ltda", crt: "3" };
+  const f2 = { cnpj: "98765432000110", nome: "Atacado Higiene Centro-Oeste S.A.", crt: "3" };
+  const empD = { cnpj: emp.cnpj, nome: emp.nome };
+  out.push(mk("E", 88120, "2026-08-05", f1, empD, P.arroz, "000", "000001", 27600));
+  out.push(mk("E", 88121, "2026-08-05", f1, empD, P.feijao, "200", "200003", 15100));
+  out.push(mk("E", 88340, "2026-09-04", f1, empD, P.arroz, "000", "000001", 26900));
+  out.push(mk("E", 4410, "2026-08-11", f2, empD, P.sabo, "200", "200035", 5200));
+  out.push(mk("E", 4411, "2026-08-11", f2, empD, P.papel, "000", "000001", 6300));
+  return out;
+}
+
+/* ================= interação ================= */
+function lerCenarios() {
+  const g = id => { const x = parseFloat($(id).value); return isFinite(x) && x >= 0 ? x : 0; };
+  S.cen = { c27: g("#c27"), i27: g("#i27"), cP: g("#cP"), iP: g("#iP") };
+}
+function reprocessar() {
+  if (!S.items.length) return;
+  const its = S.items.map(({ op, esp, status, tipoErro, probs, base, imp, ...raw }) => raw);
+  processar(its.filter(i => i.origem === "E"), its.filter(i => i.origem === "S")); render();
+}
+function perfilMudou() {
+  try { localStorage.setItem("vr_perfil", JSON.stringify(S.prof)); } catch (e) { }
+  montarPerfil(); reprocessar();
+}
+function desenharRamos() {
+  const tipos = S.prof.tipo === "ambos" ? ["comercio", "servico"] : [S.prof.tipo];
+  const grupo = (tp, titulo) => {
+    const rs = (R.ramos || []).filter(r => r.tipo === tp && r.codigos.length);
+    return `<div class="grp">${titulo}</div>` +
+      rs.map(r => `<label class="check"><input type="checkbox" id="ramo-${r.id}" value="${r.id}" ${S.prof.ramos.includes(r.id) ? "checked" : ""}><span>${esc(r.nome)}</span></label>`).join("");
+  };
+  $("#ramos").innerHTML = tipos.map(t => grupo(t, t === "comercio" ? "Mercadorias (NF-e)" : "Serviços (NFS-e)")).join("");
+  for (const r of document.querySelectorAll('input[name="tipo"]')) r.checked = r.value === S.prof.tipo;
+  $("#gov").checked = S.prof.gov;
+}
+function rodarExemplo() {
+  S.sample = true; S.nXmls = 0;
+  const its = exemplo();
+  processar(its.filter(i => i.origem === "E"), its.filter(i => i.origem === "S"));
+  render();
+}
+async function rodar() {
+  const btn = $("#btnRun"); btn.disabled = true; btn.textContent = "Lendo notas…";
+  const prog = $("#prog"); prog.hidden = false; const bar = prog.firstElementChild;
+  try {
+    const e = await lerArquivos(S.filesE, "E", p => bar.style.width = (p * 50) + "%");
+    const s = await lerArquivos(S.filesS, "S", p => bar.style.width = (50 + p * 50) + "%");
+    bar.style.width = "100%";
+    if (!e.itens.length && !s.itens.length) { toast("Nenhuma NF-e válida encontrada nos arquivos."); return; }
+    S.sample = false; S.nXmls = e.xmls + s.xmls; S.tab = "resumo";
+    processar(e.itens, s.itens); render();
+    toast(`${(e.xmls + s.xmls).toLocaleString("pt-BR")} XMLs analisados.`);
+  } catch (err) { console.error(err); toast("Erro ao ler os arquivos: " + (err.message || err)); }
+  finally { btn.disabled = !(S.filesE.length || S.filesS.length); btn.textContent = "Validar notas"; setTimeout(() => prog.hidden = true, 600); }
+}
+function ligarDrop(zone, input, key, cnt) {
+  const upd = () => { $(cnt).textContent = S[key].length + (S[key].length === 1 ? " arquivo" : " arquivos"); $("#btnRun").disabled = !(S.filesE.length || S.filesS.length); };
+  input.addEventListener("change", () => { S[key] = [...input.files]; upd(); });
+  zone.addEventListener("dragover", ev => { ev.preventDefault(); zone.classList.add("over"); });
+  zone.addEventListener("dragleave", () => zone.classList.remove("over"));
+  zone.addEventListener("drop", ev => { ev.preventDefault(); zone.classList.remove("over"); S[key] = [...ev.dataTransfer.files].filter(f => /\.(xml|zip)$/i.test(f.name)); upd(); });
+}
+document.addEventListener("click", async ev => {
+  const t = ev.target.closest("[data-tab],[data-filtro],[data-copy]"); if (!t) return;
+  if (t.dataset.tab) { S.tab = t.dataset.tab; try { localStorage.setItem("vr_tab", S.tab); } catch (e) { } render(); }
+  else if (t.dataset.filtro) { S.filtro = t.dataset.filtro; render(); }
+  else if (t.dataset.copy) {
+    const el = document.getElementById(t.dataset.copy);
+    try { await navigator.clipboard.writeText(el.textContent); toast("Mensagem copiada."); }
+    catch (e) { const rg = document.createRange(); rg.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(rg); toast("Texto selecionado. Use Ctrl+C."); }
+  }
+});
+document.addEventListener("input", ev => {
+  if (ev.target.id === "busca") { S.busca = ev.target.value; const pos = ev.target.selectionStart; render(); const b = $("#busca"); b.focus(); b.setSelectionRange(pos, pos); }
+});
+
+async function iniciar() {
+  try { const r = await fetch("regras.json", { cache: "no-cache" }); R = await r.json(); }
+  catch (e) { $("#results").innerHTML = `<div class="card"><div class="empty">Não foi possível carregar a base legal (regras.json). Recarregue a página.</div></div>`; return; }
+  indexar();
+  const ver = R.verificacao?.data || R.meta.geradoEm;
+  $("#baseversao").textContent = `verificada em ${brDate(ver)}`;
+  const dias = (Date.now() - new Date(ver + "T12:00:00").getTime()) / 864e5;
+  if (dias > 21) { $("#basedot").classList.add("old"); $("#basebadge").title = "Base sem verificação há mais de 3 semanas"; }
+  const cz = R.aliquotas.cenarios; const c27 = cz.find(c => c.id === "2027"), cp = cz.find(c => c.id === "pleno");
+  $("#c27").value = c27.cbs; $("#i27").value = c27.ibs; $("#cP").value = cp.cbs; $("#iP").value = cp.ibs;
+  $("#cenNota").textContent = cp.nota + " " + c27.nota;
+  lerCenarios();
+  try { const t = localStorage.getItem("vr_tab"); if (t) S.tab = t; } catch (e) { }
+  try { const p = JSON.parse(localStorage.getItem("vr_perfil") || "null"); if (p && p.tipo && Array.isArray(p.ramos)) S.prof = { tipo: p.tipo, ramos: p.ramos, gov: !!p.gov }; } catch (e) { }
+  desenharRamos(); montarPerfil();
+  ligarDrop($("#dropE"), $("#fileE"), "filesE", "#cntE");
+  ligarDrop($("#dropS"), $("#fileS"), "filesS", "#cntS");
+  $("#btnRun").addEventListener("click", rodar);
+  $("#btnSample").addEventListener("click", () => { S.tab = "resumo"; rodarExemplo(); });
+  for (const id of ["#c27", "#i27", "#cP", "#iP"]) $(id).addEventListener("change", () => { lerCenarios(); reprocessar(); });
+  document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener("change", () => { S.prof.tipo = r.value; desenharRamos(); perfilMudou(); }));
+  $("#ramos").addEventListener("change", ev => { if (!ev.target.matches("input[type=checkbox]")) return; const id = ev.target.value; S.prof.ramos = ev.target.checked ? [...new Set([...S.prof.ramos, id])] : S.prof.ramos.filter(x => x !== id); perfilMudou(); });
+  $("#gov").addEventListener("change", ev => { S.prof.gov = ev.target.checked; perfilMudou(); });
+  $("#btnExport").addEventListener("click", exportar);
+  rodarExemplo();
+  const dl = window.claude?.use ? await window.claude.use("downloads") : "site";
+  $("#btnExport").hidden = !dl || !window.XLSX;
+}
+iniciar();
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "verificacao": {
+    "data": "2026-10-17",
+    "por": "Claude (pesquisa inicial)",
+    "resumo": "Base oficial da Calculadora RFB V0059 (30/09/2026). Tabela cClassTrib v1.70 publicada em 01/10/2026: os 9 códigos novos tratam de autônomos, bagagem, remessas e regimes aduaneiros, sem efeito sobre vendas de mercadorias por NCM."
+  },
+  "itens": [
+    {"data": "2026-10-30", "tipo": "prazo", "titulo": "TCU envia ao Senado o cálculo da alíquota de referência da CBS",
+     "texto": "Prazo para o TCU calcular e encaminhar a alíquota de referência. O Senado tem até 15/12/2026 para fixá-la por resolução, valendo a partir de 01/01/2027.",
+     "fonte": "https://www.contadores.cnt.br/noticias/tecnicas/2026/09/28/reforma-tributaria-ibs-e-cbs-em-2027-aliquotas-e-proximos-passos.html"},
+    {"data": "2026-10-16", "tipo": "layout", "titulo": "Tabela cClassTrib v1.70 em produção",
+     "texto": "Prazo para os autorizadores aplicarem a v1.70 (IT 2025.002). Nove códigos novos (000006, 200055, 200056, 400003, 400004, 550026 a 550029) e ajustes de indicadores.",
+     "fonte": "https://migrate.info/en/blog/brasil/tabela-classificacao-tributaria-ibs-cbs-v1-70"},
+    {"data": "2026-09-14", "tipo": "alíquota", "titulo": "Executivo envia ao TCU a proposta de cálculo da CBS",
+     "texto": "Proposta da Receita Federal para a alíquota de referência da CBS de 2027.",
+     "fonte": "https://www.contadores.cnt.br/noticias/tecnicas/2026/09/28/reforma-tributaria-ibs-e-cbs-em-2027-aliquotas-e-proximos-passos.html"},
+    {"data": "2026-08-03", "tipo": "obrigação", "titulo": "Grupo IBS/CBS obrigatório na NF-e do regime normal (CRT 3)",
+     "texto": "Desde 03/08/2026 a NF-e de contribuinte do regime normal sem o grupo IBSCBS é rejeitada. Simples Nacional (CRT 1, 2 e 4) passa a ser obrigado em 04/01/2027.",
+     "fonte": "https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=04BIflQt1aY="},
+    {"data": "2026-07-31", "tipo": "alíquota", "titulo": "CGIBS estima alíquota conjunta de 27,91%",
+     "texto": "Resolução CGIBS 14/2026: IBS 18,7% e CBS 9,21%, para fins orçamentários. Acima do teto de 26,5%. Usada aqui como cenário de regime pleno.",
+     "fonte": "https://fenacon.org.br/reforma-tributaria/comite-gestor-estima-aliquota-do-iva-em-2791-acima-do-teto-previsto-na-reforma-tributaria/"}
+  ]
+}

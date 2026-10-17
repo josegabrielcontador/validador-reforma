@@ -1,0 +1,43 @@
+name: Atualizar base legal
+
+on:
+  schedule:
+    - cron: "0 10 * * 1"   # toda segunda, 07:00 em Brasília
+  workflow_dispatch:        # permite rodar manualmente pela aba Actions
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Baixar dados oficiais (Calculadora RFB + IT 2025.002)
+        run: |
+          VER=$(npm view @sinete/ibs-cbs-dados version)
+          mkdir -p /tmp/dados && cd /tmp/dados
+          npm pack "@sinete/ibs-cbs-dados@$VER" --silent
+          tar xzf *.tgz
+          echo "VER=$VER" >> "$GITHUB_ENV"
+
+      - name: Gerar regras.json
+        run: python3 build_regras.py --dados /tmp/dados/package/src/data --novidades novidades.json --saida regras.json --versao-pacote "$VER"
+
+      - name: Conferir a base gerada
+        run: |
+          python3 -c "import json; r=json.load(open('regras.json')); assert len(r['classes'])>150 and len(r['vinculos'])>900 and len(r['nfse'])>1000, 'base incompleta'; print('ok', len(r['classes']), len(r['vinculos']), len(r['nfse']))"
+
+      - name: Publicar se houver mudança
+        run: |
+          git config user.name "Atualizador Smartcontax"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add regras.json
+          if git diff --cached --quiet; then echo "Sem mudanças"; else git commit -m "Base legal atualizada (dados $VER)" && git push; fi

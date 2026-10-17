@@ -1,0 +1,8 @@
+Validador IBS/CBS Smartcontax
+Copyright 2026 Smartcontax Contabilidade & Consultoria LTDA.
+
+A base regras.json é gerada a partir do pacote @sinete/ibs-cbs-dados
+(https://github.com/sinete-dev/sinete), licenciado sob a Apache License 2.0,
+que reúne dados públicos da Calculadora de Tributos da Reforma Tributária (Receita Federal)
+e do Informe Técnico 2025.002 (Portal Nacional da NF-e).
+Texto da licença: https://www.apache.org/licenses/LICENSE-2.0
